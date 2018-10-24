@@ -221,15 +221,20 @@ with open(data_path) as datafile:
         # Pass the svg string as a bytestring encoded in UTF-8 to CairoSVG and
         # write the output pdf to
         # output_path + '/' + row[3] + '-<front or back>.pdf'
+        #
+        # The width/height numbers involved some trial and error but these are
+        # the size needed to output the correct PDF size for the IDs.
         cairosvg.svg2pdf(
             bytestring=id_front.encode('utf-8'),
-            write_to=output_path + '/tmp/' + row[3] + '-front.pdf'
             write_to=os.path.join(output_path, 'tmp', row[3] + '-front.pdf'),
+            parent_width=323,
+            parent_height=204
         )
         cairosvg.svg2pdf(
             bytestring=id_back.encode('utf-8'),
-            write_to=output_path + '/tmp/' + row[3] + '-back.pdf'
             write_to=os.path.join(output_path, 'tmp', row[3] + '-back.pdf'),
+            parent_width=323,
+            parent_height=204
         )
 
         #### Merge the front and back PDFs into one
