@@ -65,7 +65,7 @@ template_path = args.template
 # The path to the data file to load and parse
 data_path = args.data
 # The path to the images directory to find the needed photos
-images_path = args.images[:-1]
+images_path = args.images
 # The path to the output PDFs
 output_path = args.out
 # Whether to output debug information to stdout
@@ -152,7 +152,7 @@ with open(data_path) as datafile:
 
         # Read the contents of the image at `images_path`/<year>/<photo>.jpg
         # and convert it into a base64 string
-        with open(images_path + '/' + row[2] + '/' + row[4] + '.jpg', 'rb')   \
+        with open(os.path.join(images_path, row[2], row[4] + '.jpg'), 'rb')   \
             as f:
             # NOTE: If the student is off scale for the box, make sure the svg
             # element for the element is using the width and height of the
@@ -224,10 +224,12 @@ with open(data_path) as datafile:
         cairosvg.svg2pdf(
             bytestring=id_front.encode('utf-8'),
             write_to=output_path + '/tmp/' + row[3] + '-front.pdf'
+            write_to=os.path.join(output_path, 'tmp', row[3] + '-front.pdf'),
         )
         cairosvg.svg2pdf(
             bytestring=id_back.encode('utf-8'),
             write_to=output_path + '/tmp/' + row[3] + '-back.pdf'
+            write_to=os.path.join(output_path, 'tmp', row[3] + '-back.pdf'),
         )
 
         #### Merge the front and back PDFs into one
@@ -235,15 +237,15 @@ with open(data_path) as datafile:
         # Initialize the PDF merger
         merger = PdfFileMerger()
         # The path to the front of the id
-        front = output_path + '/tmp/' + row[3] + '-front.pdf'
+        front = os.path.join(output_path, 'tmp', row[3] + '-front.pdf')
         # The path to the back of the id
-        back = output_path + '/tmp/' + row[3] + '-back.pdf'
+        back = os.path.join(output_path, 'tmp', row[3] + '-back.pdf')
         # Add the front to the output PDF
         merger.append(front)
         # Add the back to the output PDF
         merger.append(back)
         # Open/create the output PDF file in write byte mode
-        with open(output_path + '/' + row[3] + '.pdf', 'wb') as output:
+        with open(os.path.join(output_path, row[3] + '.pdf'), 'wb') as output:
             # Write the output to the output PDF
             merger.write(output)
 
